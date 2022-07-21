@@ -33,21 +33,25 @@ The *fairness metrics* that can be evaluated for each model are the following:
 
 * ***Statistical parity*** (also known as *demographic parity*).
     It defines fairness as an equal probability for each group of being assigned to the positive predictive class, i.e. the predictions are independent with the sensitive attribute.
+    
     $$
     P(\hat{y} = 1 | s = 0) = P(\hat{y} = 1 | s = 1)
     $$
 
 * ***Equal opportunity***. It requires the probability of a subject in a positive class to be classified with the positive outcome should be equal for each group, i.e. TPR should be the same across groups.
+    
     $$
     P(\hat{y} = 1 | y = 1, s = 0) = P(\hat{y} = 1 | y = 1, s = 1)
     $$
 
 * ***Overall accuracy equality***. It considers the relative accuracy rates across different groups and defines fairness as the equal probability of a subject from either positive or negative class to be assigned to its respective class, i.e. each group should have the same prediction accuracy.
+    
     $$
     P(\hat{y} = 0 | y = 0, s = 0) + P(\hat{y} = 1 | y = 1, s = 0) = P(\hat{y} = 0 | y = 0, s = 1) + P(\hat{y} = 1 | y = 1, s = 1)
     $$
 
 * ***Treatment equality***. It requires the ratio of errors made by the classifier to be equal across different groups, i.e. each group should have the same ratio of *false negatives* (FNR) and *false positives* (FPR).
+    
     $$
     \frac{P(\hat{y} = 1 | y = 0, s = 0)}{P(\hat{y} = 0 | y = 1, s = 0)} = \frac{P(\hat{y} = 1 | y = 0, s = 1)}{P(\hat{y} = 0 | y = 1, s = 1)}
     $$
