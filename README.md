@@ -1,3 +1,5 @@
+[![Python](https://img.shields.io/badge/Python-3.8.10-%233776AB?logo=Python)](https://www.python.org/)
+
 # Fairness analysis of GNN-based models for behavioural user profiling
 
 Analysis of **fairness** on state-of-the-art GNN-based models for behavioural user profiling.
