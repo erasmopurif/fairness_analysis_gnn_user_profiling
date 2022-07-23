@@ -182,10 +182,10 @@ class ClusterGNNTrainer(object):
         auc = metrics.auc(fpr, tpr)
         print("AUC:", auc)
 
-        elaps_time = (time.perf_counter() - train_start_time)/60
+        train_time = (time.perf_counter() - train_start_time)/60
 
         print("Optimization Finished!")
-        print("Total time elapsed: {:.2f}min".format(elaps_time))
+        print("Total time elapsed: {:.2f}min".format(train_time))
         print("Best Result:\n",
             "best epoch: {:04d}".format(best_epoch),
             "||",
@@ -203,4 +203,4 @@ class ClusterGNNTrainer(object):
         self.neptune_run["test/tpr"] = tpr
         self.neptune_run["test/fpr"] = fpr
         self.neptune_run["conf_matrix"] = confusion_matrix
-        self.neptune_run["elaps_time"] = elaps_time
+        self.neptune_run["train_time"] = train_time

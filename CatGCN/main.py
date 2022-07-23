@@ -7,10 +7,13 @@ from clustering import ClusteringMachine
 from clustergnn import ClusterGNNTrainer
 
 from utils import pos_preds_attr_distr, tab_printer, graph_reader, field_reader, target_reader, label_reader
+import time
 
 from fairness import Fairness
 
 def main():
+    start_time = time.perf_counter()
+
     """
     Parsing command line parameters, reading data, graph decomposition, fitting and scoring the model.
     """
@@ -62,6 +65,9 @@ def main():
     fair_obj.equal_opportunity()
     fair_obj.overall_accuracy_equality()
     fair_obj.treatment_equality()
+
+    elaps_time = (start_time - time.perf_counter())/60
+    neptune_run["elaps_time"] = elaps_time
 
     neptune_run.stop()
 
