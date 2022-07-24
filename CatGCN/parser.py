@@ -161,7 +161,7 @@ def parameter_parser():
                         default="64",
                         help="Hidden units for global gat part, splitted with comma, maybe none.")
 
-    # New parameter for computing fairness
+    # Args for computing fairness
     parser.add_argument("--labels-path",
                         nargs="?",
                         default="./input/user_labels.csv",
@@ -181,5 +181,16 @@ def parameter_parser():
                         type=str,
                         default="",
                         help="Tags for Neptune logs.")
+
+    # Args for tracking data in Neptune.ai
+    parser.add_argument("--neptune-project",
+                        type=str,
+                        default="",
+                        help="Name of the Neptune.ai project to store the experiment info.")
+
+    parser.add_argument("--neptune-token",
+                        type=str,
+                        default="",
+                        help="API-token of Neptune.ai project.")
 
     return parser.parse_args()
