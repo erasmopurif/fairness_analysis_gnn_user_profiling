@@ -66,7 +66,7 @@ def main():
     fair_obj.overall_accuracy_equality()
     fair_obj.treatment_equality()
 
-    elaps_time = (start_time - time.perf_counter())/60
+    elaps_time = (time.perf_counter() - start_time)/60
     neptune_run["elaps_time"] = elaps_time
 
     neptune_run.stop()
