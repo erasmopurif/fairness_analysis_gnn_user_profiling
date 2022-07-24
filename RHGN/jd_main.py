@@ -39,8 +39,8 @@ if torch.cuda.is_available():
 
 # Instantiate Neptune client and log arguments
 neptune_run = neptune.init(
-    project="erasmopurif/RHGN-fairness-user-profiling",
-    api_token="eyJhcGlfYWRkcmVzcyI6Imh0dHBzOi8vYXBwLm5lcHR1bmUuYWkiLCJhcGlfdXJsIjoiaHR0cHM6Ly9hcHAubmVwdHVuZS5haSIsImFwaV9rZXkiOiI0ZGRhYTczYi03MjA1LTRjOTEtYjFjMC1kMjg4ZDZmNWY0ZGMifQ==",
+    project=args.neptune_project,
+    api_token=args.neptune_token,
 )
 neptune_run["sys/tags"].add(args.log_tags.split(","))
 neptune_run["seed"] = args.seed
