@@ -29,6 +29,8 @@ parser.add_argument('--data_dir',  type=str, default='../data/sample')
 parser.add_argument('--patience', type=int, default=10)
 parser.add_argument('--sens_attr', type=str, default='gender')
 parser.add_argument('--log_tags', type=str, default='')
+parser.add_argument('--neptune-project', type=str, default='')
+parser.add_argument('--neptune-token', type=str, default='')
 
 args = parser.parse_args()
 '''Fixed random seeds'''
