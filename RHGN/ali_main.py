@@ -31,6 +31,8 @@ parser.add_argument('--sens_attr', type=str, default='gender')
 parser.add_argument('--log_tags', type=str, default='')
 parser.add_argument('--neptune-project', type=str, default='')
 parser.add_argument('--neptune-token', type=str, default='')
+parser.add_argument('--multiclass-pred', type=bool, default=False)
+parser.add_argument('--multiclass-sens', type=bool, default=False)
 
 args = parser.parse_args()
 '''Fixed random seeds'''
@@ -282,7 +284,7 @@ if args.model=='RHGN':
     targets, predictions = Batch_train(model)
 
     # Compute fairness
-    fair_obj = Fairness(G, test_idx, targets, predictions, args.sens_attr, neptune_run)
+    fair_obj = Fairness(G, test_idx, targets, predictions, args.sens_attr, neptune_run, args.multiclass_pred, args.multiclass_sens)
     fair_obj.statistical_parity()
     fair_obj.equal_opportunity()
     fair_obj.overall_accuracy_equality()

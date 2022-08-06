@@ -193,4 +193,15 @@ def parameter_parser():
                         default="",
                         help="API-token of Neptune.ai project.")
 
+    # Args for multiclass fairness analysis
+    parser.add_argument("--multiclass-pred",
+                        type=bool,
+                        default=False,
+                        help="Classifier type (multiclass or binary).")
+
+    parser.add_argument("--multiclass-sens",
+                        type=bool,
+                        default=False,
+                        help="Sensitive attribute type (multiclass or binary).")
+
     return parser.parse_args()
