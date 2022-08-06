@@ -41,6 +41,8 @@ class Fairness(object):
                 for s_idx in self.sens_attr_range:
                     self.y_s[y_idx].append(np.bitwise_and(self.true_y == y_idx, self.s[s_idx]))
                     self.yneq_s[y_idx].append(np.bitwise_and(self.true_y != y_idx, self.s[s_idx]))
+            self.y_s = np.array(self.y_s)
+            self.yneq_s = np.array(self.yneq_s)
 
         elif self.multiclass_sens: # Classifier: binary - Sens.attr: multiclass
             self.sens_attr_range = list(set(self.sens_attr_values))
@@ -106,10 +108,13 @@ class Fairness(object):
             for y_hat_idx in self.class_range:
                 equal_opp.append([])
                 for s_idx in self.sens_attr_range:
-                    equal_opp[y_hat_idx].append(
-                        sum(np.bitwise_and(self.y_hat[y_hat_idx], self.y_s[y_hat_idx][s_idx])) /
-                        sum(self.y_s[y_hat_idx][s_idx])
-                    )
+                    try:
+                        equal_opp[y_hat_idx].append(
+                            sum(np.bitwise_and(self.y_hat[y_hat_idx], self.y_s[y_hat_idx][s_idx])) /
+                            sum(self.y_s[y_hat_idx][s_idx])
+                        )
+                    except ZeroDivisionError:
+                        equal_opp[y_hat_idx].append(0)
                     self.neptune_run["fairness/EO_y" + str(y_hat_idx) + "_s" + str(s_idx)] = equal_opp[y_hat_idx][s_idx]
         elif self.multiclass_sens: # Classifier: binary - Sens.attr: multiclass
             ''' P(y^=1|y=1,s=0) = P(y^=1|y=1,s=1) = ... = P(y^=1|y=1,s=N) '''
@@ -136,10 +141,13 @@ class Fairness(object):
             for s_idx in self.sens_attr_range:
                 oae_temp = 0.0
                 for y_hat_idx in self.class_range:
-                    oae_temp += (
-                        sum(np.bitwise_and(self.y_hat[y_hat_idx], self.y_s[y_hat_idx][s_idx])) /
-                        sum(self.y_s[y_hat_idx][s_idx])
-                    )
+                    try:
+                        oae_temp += (
+                            sum(np.bitwise_and(self.y_hat[y_hat_idx], self.y_s[y_hat_idx][s_idx])) /
+                            sum(self.y_s[y_hat_idx][s_idx])
+                        )
+                    except ZeroDivisionError:
+                        oae_temp += 0.0
                 oae_s.append(oae_temp)
                 self.neptune_run["fairness/OAE_s" + str(s_idx)] = oae_s[s_idx]
         elif self.multiclass_sens: # Classifier: binary - Sens.attr: multiclass
@@ -172,27 +180,37 @@ class Fairness(object):
             """
             te_fp_fn = []
             te_fn_fp = []
-            abs_te_fp_fn = 0.0
-            abs_te_fn_fp = 0.0
+            te = []
             for y_hat_idx in self.class_range:
                 te_fp_fn.append([])
                 te_fn_fp.append([])
+                abs_te_fp_fn = 0.0
+                abs_te_fn_fp = 0.0
+                te.append([])
                 for s_idx in self.sens_attr_range:
-                    te_fp_fn[y_hat_idx].append(
-                        (sum(np.bitwise_and(self.y_hat[y_hat_idx], self.yneq_s[y_hat_idx][s_idx])) / sum(self.yneq_s[y_hat_idx][s_idx])) /
-                        (sum(np.bitwise_and(self.yneq_hat[y_hat_idx], self.y_s[y_hat_idx][s_idx])) / sum(self.y_s[y_hat_idx][s_idx]))
-                    )
-                    te_fn_fp[y_hat_idx].append(
-                        (sum(np.bitwise_and(self.yneq_hat[y_hat_idx], self.y_s[y_hat_idx][s_idx])) / sum(self.y_s[y_hat_idx][s_idx])) /
-                        (sum(np.bitwise_and(self.y_hat[y_hat_idx], self.yneq_s[y_hat_idx][s_idx])) / sum(self.yneq_s[y_hat_idx][s_idx]))
-                    )
+                    try:
+                        te_fp_fn[y_hat_idx].append(
+                            (sum(np.bitwise_and(self.y_hat[y_hat_idx], self.yneq_s[y_hat_idx][s_idx])) / sum(self.yneq_s[y_hat_idx][s_idx])) /
+                            (sum(np.bitwise_and(self.yneq_hat[y_hat_idx], self.y_s[y_hat_idx][s_idx])) / sum(self.y_s[y_hat_idx][s_idx]))
+                        )
+                    except ZeroDivisionError:
+                        te_fp_fn[y_hat_idx].append(0)
+                    
+                    try:
+                        te_fn_fp[y_hat_idx].append(
+                            (sum(np.bitwise_and(self.yneq_hat[y_hat_idx], self.y_s[y_hat_idx][s_idx])) / sum(self.y_s[y_hat_idx][s_idx])) /
+                            (sum(np.bitwise_and(self.y_hat[y_hat_idx], self.yneq_s[y_hat_idx][s_idx])) / sum(self.yneq_s[y_hat_idx][s_idx]))
+                        )
+                    except ZeroDivisionError:
+                        te_fn_fp[y_hat_idx].append(0)
+
                     abs_te_fp_fn += abs(te_fp_fn[y_hat_idx][s_idx])
                     abs_te_fn_fp += abs(te_fn_fp[y_hat_idx][s_idx])
             
-            if abs_te_fp_fn < abs_te_fn_fp:
-                te = te_fp_fn
-            else:
-                te = te_fn_fp
+                    if abs_te_fp_fn < abs_te_fn_fp:
+                        te[y_hat_idx].append(te_fp_fn[y_hat_idx][s_idx])
+                    else:
+                        te[y_hat_idx].append(te_fn_fp[y_hat_idx][s_idx])
 
             for y_idx in self.class_range:
                 for s_idx in self.sens_attr_range:
