@@ -30,8 +30,8 @@ class Fairness(object):
                 
             self.sens_attr_range = list(set(self.sens_attr_values))
             self.s = []
-            for sens_attr_idx in self.sens_attr_range:
-                self.s.append(self.sens_attr_values == sens_attr_idx)
+            for s_idx in self.sens_attr_range:
+                self.s.append(self.sens_attr_values == s_idx)
 
             self.y_s = []
             self.yneq_s = []
@@ -47,10 +47,10 @@ class Fairness(object):
             self.s = []
             self.y1_s = []
             self.y0_s = []
-            for sens_attr_idx in self.sens_attr_range:
-                self.s.append(self.sens_attr_values == sens_attr_idx)
-                self.y1_s.append(np.bitwise_and(self.true_y == 1, self.s[sens_attr_idx]))
-                self.y0_s.append(np.bitwise_and(self.true_y == 0, self.s[sens_attr_idx]))
+            for s_idx in self.sens_attr_range:
+                self.s.append(self.sens_attr_values == s_idx)
+                self.y1_s.append(np.bitwise_and(self.true_y == 1, self.s[s_idx]))
+                self.y0_s.append(np.bitwise_and(self.true_y == 0, self.s[s_idx]))
         
         else: # Classifier: binary - Sens.attr: binary
             self.s0 = self.sens_attr_values == 0
@@ -80,9 +80,9 @@ class Fairness(object):
         elif self.multiclass_sens: # Classifier: binary - Sens.attr: multiclass
             ''' P(y^=1|s=0) = P(y^=1|s=1) = ... = P(y^=1|s=N) '''
             stat_parity_s = []
-            for sens_attr_idx in self.sens_attr_range:
-                stat_parity_s.append(sum(self.pred_y[self.s[sens_attr_idx]]) / sum(self.s[sens_attr_idx]))
-                self.neptune_run["fairness/SP_s" + str(sens_attr_idx)] = stat_parity_s[sens_attr_idx]
+            for s_idx in self.sens_attr_range:
+                stat_parity_s.append(sum(self.pred_y[self.s[s_idx]]) / sum(self.s[s_idx]))
+                self.neptune_run["fairness/SP_s" + str(s_idx)] = stat_parity_s[s_idx]
         else: # Classifier: binary - Sens.attr: binary
             ''' P(y^=1|s=0) = P(y^=1|s=1) '''
             # stat_parity = abs(sum(self.pred_y[self.s0]) / sum(self.s0) - sum(self.pred_y[self.s1]) / sum(self.s1))
@@ -114,9 +114,9 @@ class Fairness(object):
         elif self.multiclass_sens: # Classifier: binary - Sens.attr: multiclass
             ''' P(y^=1|y=1,s=0) = P(y^=1|y=1,s=1) = ... = P(y^=1|y=1,s=N) '''
             equal_opp_s = []
-            for sens_attr_idx in self.sens_attr_range:
-                equal_opp_s.append(sum(self.pred_y[self.y1_s[sens_attr_idx]]) / sum(self.y1_s[sens_attr_idx]))
-                self.neptune_run["fairness/EO_s" + str(sens_attr_idx)] = equal_opp_s[sens_attr_idx]
+            for s_idx in self.sens_attr_range:
+                equal_opp_s.append(sum(self.pred_y[self.y1_s[s_idx]]) / sum(self.y1_s[s_idx]))
+                self.neptune_run["fairness/EO_s" + str(s_idx)] = equal_opp_s[s_idx]
         else: # Classifier: binary - Sens.attr: binary
             ''' P(y^=1|y=1,s=0) = P(y^=1|y=1,s=1) '''
             # equal_opp = abs(sum(self.pred_y[self.y1_s0]) / sum(self.y1_s0) - sum(self.pred_y[self.y1_s1]) / sum(self.y1_s1))
@@ -145,12 +145,12 @@ class Fairness(object):
         elif self.multiclass_sens: # Classifier: binary - Sens.attr: multiclass
             ''' P(y^=0|y=0,s=0) + P(y^=1|y=1,s=0) = ... = P(y^=0|y=0,s=N) + P(y^=1|y=1,s=N)'''
             oae_s = []
-            for sens_attr_idx in self.sens_attr_range:
+            for s_idx in self.sens_attr_range:
                 oae_s.append(
-                    np.count_nonzero(self.pred_y[self.y0_s[sens_attr_idx]]==0) / sum(self.y0_s[sens_attr_idx]) +
-                    sum(self.pred_y[self.y1_s[sens_attr_idx]]) / sum(self.y1_s[sens_attr_idx])
+                    np.count_nonzero(self.pred_y[self.y0_s[s_idx]]==0) / sum(self.y0_s[s_idx]) +
+                    sum(self.pred_y[self.y1_s[s_idx]]) / sum(self.y1_s[s_idx])
                 )
-                self.neptune_run["fairness/OAE_s" + str(sens_attr_idx)] = oae_s[sens_attr_idx]
+                self.neptune_run["fairness/OAE_s" + str(s_idx)] = oae_s[s_idx]
         else: # Classifier: binary - Sens.attr: binary
             ''' P(y^=0|y=0,s=0) + P(y^=1|y=1,s=0) = P(y^=0|y=0,s=1) + P(y^=1|y=1,s=1) '''
             oae_s0 = np.count_nonzero(self.pred_y[self.y0_s0]==0) / sum(self.y0_s0) + sum(self.pred_y[self.y1_s0]) / sum(self.y1_s0)
@@ -204,17 +204,17 @@ class Fairness(object):
             te0_s = []
             abs_te1 = []
             abs_te0 = []
-            for sens_attr_idx in self.sens_attr_range:
+            for s_idx in self.sens_attr_range:
                 te1_s.append(
-                    (sum(self.pred_y[self.y0_s[sens_attr_idx]]) / sum(self.y0_s[sens_attr_idx])) /
-                    (np.count_nonzero(self.pred_y[self.y1_s[sens_attr_idx]]==0) / sum(self.y1_s[sens_attr_idx]))
+                    (sum(self.pred_y[self.y0_s[s_idx]]) / sum(self.y0_s[s_idx])) /
+                    (np.count_nonzero(self.pred_y[self.y1_s[s_idx]]==0) / sum(self.y1_s[s_idx]))
                 )
                 te0_s.append(
-                    (np.count_nonzero(self.pred_y[self.y1_s[sens_attr_idx]]==0) / sum(self.y1_s[sens_attr_idx])) /
-                    (sum(self.pred_y[self.y0_s[sens_attr_idx]]) / sum(self.y0_s[sens_attr_idx]))
+                    (np.count_nonzero(self.pred_y[self.y1_s[s_idx]]==0) / sum(self.y1_s[s_idx])) /
+                    (sum(self.pred_y[self.y0_s[s_idx]]) / sum(self.y0_s[s_idx]))
                 )
-                abs_te1.append(abs(te1_s[sens_attr_idx]))
-                abs_te0.append(abs(te0_s[sens_attr_idx]))
+                abs_te1.append(abs(te1_s[s_idx]))
+                abs_te0.append(abs(te0_s[s_idx]))
             
             if sum(abs_te1) < sum(abs_te0):
                 te_s = te1_s
