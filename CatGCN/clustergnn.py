@@ -178,9 +178,9 @@ class ClusterGNNTrainer(object):
         # Confusion matrics and AUC
         confusion_matrix = metrics.confusion_matrix(self.targets, self.predictions)
         print(confusion_matrix)
-        fpr, tpr, _ = metrics.roc_curve(self.targets, self.predictions)
-        auc = metrics.auc(fpr, tpr)
-        print("AUC:", auc)
+        # fpr, tpr, _ = metrics.roc_curve(self.targets, self.predictions)
+        # auc = metrics.auc(fpr, tpr)
+        # print("AUC:", auc)
 
         train_time = (time.perf_counter() - train_start_time)/60
 
@@ -199,8 +199,8 @@ class ClusterGNNTrainer(object):
         self.neptune_run["test/loss"] = test_loss
         self.neptune_run["test/acc"] = acc_score
         self.neptune_run["test/f1"] = macro_f1
-        self.neptune_run["test/auc"] = auc
-        self.neptune_run["test/tpr"] = tpr
-        self.neptune_run["test/fpr"] = fpr
+        # self.neptune_run["test/auc"] = auc
+        # self.neptune_run["test/tpr"] = tpr
+        # self.neptune_run["test/fpr"] = fpr
         self.neptune_run["conf_matrix"] = confusion_matrix
         self.neptune_run["train_time"] = train_time
