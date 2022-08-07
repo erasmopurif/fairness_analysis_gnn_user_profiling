@@ -163,9 +163,9 @@ def Batch_train(model):
     # Classification reports
     confusion_matrix = metrics.confusion_matrix(labels, preds)
     print(confusion_matrix)
-    fpr, tpr, _ = metrics.roc_curve(labels, preds)
-    auc = metrics.auc(fpr, tpr)
-    print("AUC:", auc)
+    # fpr, tpr, _ = metrics.roc_curve(labels, preds)
+    # auc = metrics.auc(fpr, tpr)
+    # print("AUC:", auc)
 
     toc = time.perf_counter() # stop counting time
     elapsed_time = (toc-tic)/60
@@ -174,9 +174,9 @@ def Batch_train(model):
     # Log result on Neptune
     neptune_run["test/accuracy"] = best_test_acc
     neptune_run["test/f1_score"] = test_f1
-    neptune_run["test/auc"] = auc
-    neptune_run["test/tpr"] = tpr
-    neptune_run["test/fpr"] = fpr
+    # neptune_run["test/auc"] = auc
+    # neptune_run["test/tpr"] = tpr
+    # neptune_run["test/fpr"] = fpr
     neptune_run["conf_matrix"] = confusion_matrix
     neptune_run["elaps_time"] = elapsed_time
 
