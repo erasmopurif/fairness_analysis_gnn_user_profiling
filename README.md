@@ -25,9 +25,9 @@ The raw datasets are available at the following links:
 
 ## Fairness metrics
 Every *fairness metrics* defined below considers:
-* $y \in \{0,1\}$ as the binary target label;
-* $\hat{y} \in \{0,1\}$ as the prediction of the user profiling model $f: x \rightarrow y$;
-* $s \in \{0,1\}$ as the sensitive attribute.
+* $y \in \lbrace 0,1 \rbrace$ as the binary target label;
+* $\hat{y} \in \lbrace 0,1 \rbrace$ as the prediction of the user profiling model $f: x \rightarrow y$;
+* $s \in \lbrace 0,1 \rbrace$ as the sensitive attribute.
 
 In the metrics' descriptions, we also exploit the following notation which relates to classification properties: TPR, FPR, TNR and FNR, denoting *true positive rate*, *false positive rate*, *true negative rate* and *false negative rate*, respectively.
 
