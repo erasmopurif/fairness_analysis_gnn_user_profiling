@@ -31,8 +31,10 @@ parser.add_argument('--sens_attr', type=str, default='gender')
 parser.add_argument('--log_tags', type=str, default='')
 parser.add_argument('--neptune-project', type=str, default='')
 parser.add_argument('--neptune-token', type=str, default='')
-parser.add_argument('--multiclass-pred', type=bool, default=False)
-parser.add_argument('--multiclass-sens', type=bool, default=False)
+parser.add_argument('--multiclass-pred', dest='multiclass_pred', type=bool, default=False)
+parser.add_argument('--multiclass-sens', dest='multiclass_sens', type=bool, default=False)
+# parser.add_argument('--multiclass-pred', dest='multiclass_pred', default=False, action='store_true')
+# parser.add_argument('--multiclass-sens', dest='multiclass_sens', default=False, action='store_true')
 
 args = parser.parse_args()
 '''Fixed random seeds'''

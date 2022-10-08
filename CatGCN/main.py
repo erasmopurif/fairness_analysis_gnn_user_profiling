@@ -54,9 +54,9 @@ def main():
     gnn_trainer.train_val_test()
 
     ## Compute accuracy per sensitive attribute group
-    pos_preds_distr = pos_preds_attr_distr(user_labels, gnn_trainer.targets, gnn_trainer.predictions, clustering_machine.sg_test_nodes[0], args.label, "age")
-    print(pos_preds_distr)
-    neptune_run["pos_preds_distr"] = pos_preds_distr
+    # pos_preds_distr = pos_preds_attr_distr(user_labels, gnn_trainer.targets, gnn_trainer.predictions, clustering_machine.sg_test_nodes[0], args.label, "age")
+    # print(pos_preds_distr)
+    # neptune_run["pos_preds_distr"] = pos_preds_distr
 
     ## Compute fairness metrics
     print("Fairness metrics on sensitive attributes '{}':".format(args.sens_attr))
